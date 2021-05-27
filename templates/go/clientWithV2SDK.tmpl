@@ -1,0 +1,45 @@
+package main
+
+// Replace:
+// * APIClient
+// * Operation
+
+import (
+	"context"
+	"log"
+
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/APIClient"
+	"github.com/awslabs/smithy-go/middleware"
+	smithyhttp "github.com/awslabs/smithy-go/transport/http"
+)
+
+func main() {
+	cfg, err := config.LoadDefaultConfig()
+	if err != nil {
+		log.Fatalf("unable to load config, %v", err)
+	}
+
+	client := APIClient.NewFromConfig(cfg, func(o *APIClient.Options) {
+		//o.HTTPClient = smithyhttp.WrapLogClient(logger{}, aws.NewBuildableHTTPClient(), true)
+	})
+
+	_, err = client.Operation(context.Background(), &APIClient.OperationInput{
+		// Params
+	}, func(o *APIClient.Options) {
+		o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+			log.Println(stack.String())
+			return nil
+		})
+	})
+	if err != nil {
+		log.Fatalf("request failed, %v", err)
+	}
+}
+
+var _ smithyhttp.Request
+type logger struct{}
+
+func (logger) Logf(format string, args ...interface{}) {
+	log.Printf(format, args...)
+}

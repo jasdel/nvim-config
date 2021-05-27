@@ -1,0 +1,12 @@
+		if len(c.ExpectErr) != 0 {
+			if err == nil {
+				t.Fatalf("expect error, got none")
+			}
+			if e, a := c.ExpectErr, err.Error(); !strings.Contains(a, e) {
+				t.Fatalf("expect error to contain %v, got %v", e, a)
+			}
+			return
+		}
+		if err != nil {
+			t.Fatalf("expect no error, got %v", err)
+		}
