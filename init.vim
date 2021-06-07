@@ -7,10 +7,14 @@
 " * https://medium.com/life-at-moka/step-up-your-game-with-neovim-62ba814166d7
 " * https://crispgm.com/page/neovim-is-overpowering.html
 call plug#begin("~/.config/nvim/plugged")
+  "---------------------
   " Color Schemes
+  "---------------------
   Plug 'lucasprag/simpleblack'
 
+  "---------------------
   " ** NeoVIM treesplitter plugins **
+  "---------------------
   " Install treesplitter language plugins
   " :TSInstall <lang>
   "
@@ -19,43 +23,52 @@ call plug#begin("~/.config/nvim/plugged")
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'nvim-treesitter/playground'
 
+  "---------------------
+  " Telescope ? what is this for
+  "---------------------
   " dependencies
   Plug 'nvim-lua/popup.nvim'
   Plug 'nvim-lua/plenary.nvim'
   " telescope
   Plug 'nvim-telescope/telescope.nvim'
 
+  "---------------------
   " Language tools
+  "---------------------
   Plug 'neovim/nvim-lspconfig'
   Plug 'nvim-lua/lsp_extensions.nvim'
   Plug 'nvim-lua/completion-nvim'
-
+  " Languages
   Plug 'fatih/vim-go'
   " Rust With NeoVim
   " https://sharksforarms.dev/posts/neovim-rust/
   Plug 'rust-lang/rust.vim'
   Plug 'lepture/vim-jinja'
   Plug 'jasdel/vim-smithy'
+
+  "---------------------
+  " Git Utilities
+  "---------------------
+  Plug 'airblade/vim-gitgutter'
   
-  Plug 'airblade/vim-gitgutter'
-
-  " Code completion
-  "Plug 'hrsh7th/nvim-compe'
-  "if has('nvim')
-  "  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  "else
-  "  Plug 'Shougo/deoplete.nvim'
-  "  Plug 'roxma/nvim-yarp'
-  "  Plug 'roxma/vim-hug-neovim-rpc'
-  "endif
-  "let g:deoplete#enable_at_startup = 1
-
-  " Git utilities
-  Plug 'airblade/vim-gitgutter'
+  " Git browsing utilities
+  " https://github.com/tpope/vim-fugitive
+  " :GBrowse - open in browser (Github), optional line selection
+  Plug 'tpope/vim-fugitive'
+  " Allows opening GBrowse in GitHub
+  " https://github.com/tpope/vim-rhubarb/
+  Plug 'tpope/vim-rhubarb'
 
   " Start page
   " https://github.com/mhinz/vim-startify/wiki/Plugin-features-in-detail
   Plug 'mhinz/vim-startify'
+
+  ""---------------------
+  "" Fuzz search and other utilities - Ctrl + P
+  ""---------------------
+  "" https://github.com/junegunn/fzf.vim
+  "Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+  "Plug 'junegunn/fzf.vim'
 call plug#end()
 
 
@@ -112,67 +125,14 @@ endif
 "------------------------------------------
 " Setup completion opts for nvim-compe
 "------------------------------------------
-"call deoplete#custom#option('omni_patterns', { 'go': '[^. *\t]\.\w*' })
-"set completeopt=menuone,noselect
 set completeopt=menuone,noinsert,noselect
 
 " Avoid showing extra messages when using completion
 set shortmess+=c
 
-"let g:compe = {}
-"let g:compe.enabled = v:true
-"let g:compe.autocomplete = v:true
-"let g:compe.debug = v:false
-"let g:compe.min_length = 1
-"let g:compe.preselect = 'enable'
-"let g:compe.throttle_time = 80
-"let g:compe.source_timeout = 200
-"let g:compe.incomplete_delay = 400
-"let g:compe.max_abbr_width = 100
-"let g:compe.max_kind_width = 100
-"let g:compe.max_menu_width = 100
-"let g:compe.documentation = v:true
-"
-"let g:compe.source = {}
-"let g:compe.source.path = v:true
-"let g:compe.source.buffer = v:true
-"let g:compe.source.calc = v:true
-"let g:compe.source.nvim_lsp = v:true
-"let g:compe.source.nvim_lua = v:true
-""let g:compe.source.vsnip = v:true
-""let g:compe.source.ultisnips = v:true
-
-"lua << EOF
-"local capabilities = vim.lsp.protocol.make_client_capabilities()
-"capabilities.textDocument.completion.completionItem.snippetSupport = true
-"capabilities.textDocument.completion.completionItem.resolveSupport = {
-"  properties = {
-"    'documentation',
-"    'detail',
-"    'additionalTextEdits',
-"  }
-"}
-"
-"require'lspconfig'.rust_analyzer.setup {
-"  capabilities = capabilities,
-"}
-"EOF
-
-"inoremap <silent><expr> <C-Space> compe#complete()
-"inoremap <silent><expr> <CR>      compe#confirm('<CR>')
-"inoremap <silent><expr> <C-e>     compe#close('<C-e>')
-"inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
-"inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
-
-
 "------------------------------------------
 " Setup language server (LSP)
 "------------------------------------------
-"lua << EOF
-"require'lspconfig'.gopls.setup{}
-"require'lspconfig'.rust_analyzer.setup{}
-"EOF
-
 " Setup key bindings for lspconfig
 lua << EOF
 local nvim_lsp = require('lspconfig')
@@ -222,7 +182,6 @@ end
 --  --buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
 --  --buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 --  --buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
---
 --end
 
 -- Installing rust analzer
@@ -232,6 +191,7 @@ nvim_lsp.rust_analyzer.setup({
   on_attach = on_attach,
 })
 
+-- Installing Go LSP
 nvim_lsp.gopls.setup({
   capabilities = capabilities,
   on_attach = on_attach,
@@ -248,8 +208,10 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 
 EOF
 
-" Code navigation shortcuts
-" as found in :help lsp
+"------------------------------------------
+" LSP based Code navigation shortcuts
+"------------------------------------------
+" TODO Change these to be filetype specific?
 nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
@@ -273,6 +235,9 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 imap <Tab> <Plug>(completion_smart_tab)
 imap <S-Tab> <Plug>(completion_smart_s_tab)
 
+"------------------------------------------
+" Diagnostic Analysis and Popup
+"------------------------------------------
 " have a fixed column for the diagnostics to appear in
 " this removes the jitter when warnings/errors flow in
 set signcolumn=yes
@@ -287,8 +252,13 @@ autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()
 nnoremap <silent> g[ <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
 nnoremap <silent> g] <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 
-" Enable type inlay hints
+"------------------------------------------
+" Enable LSP type inlay hints
+"------------------------------------------
 autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.rs
+\ lua require'lsp_extensions'.inlay_hints{ prefix = '', highlight = "Comment", enabled = {"TypeHint", "ChainingHint", "ParameterHint"} }
+
+autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.go
 \ lua require'lsp_extensions'.inlay_hints{ prefix = '', highlight = "Comment", enabled = {"TypeHint", "ChainingHint", "ParameterHint"} }
 
 "------------------------------------------
