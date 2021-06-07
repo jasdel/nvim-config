@@ -199,6 +199,9 @@ nvim_lsp.gopls.setup({
 
 -- Installing Typescript LSP
 -- https://github.com/neovim/nvim-lspconfig/blob/36d9109dc402eb4a37e55b0814cd8d4714f9a3a4/lua/lspconfig/tsserver.lua#L35-L40
+-- https://github.com/microsoft/TypeScript/issues/39459#issuecomment-696179304
+-- https://github.com/neovim/nvim-lspconfig/issues/250
+-- https://github.com/theia-ide/typescript-language-server
 nvim_lsp.tsserver.setup({
   capabilities = capabilities,
   on_attach = on_attach,
