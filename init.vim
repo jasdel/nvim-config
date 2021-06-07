@@ -197,6 +197,13 @@ nvim_lsp.gopls.setup({
   on_attach = on_attach,
 })
 
+-- Installing Typescript LSP
+-- https://github.com/neovim/nvim-lspconfig/blob/36d9109dc402eb4a37e55b0814cd8d4714f9a3a4/lua/lspconfig/tsserver.lua#L35-L40
+nvim_lsp.tsserver.setup({
+  capabilities = capabilities,
+  on_attach = on_attach,
+})
+
 -- Enable diagnostics
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   vim.lsp.diagnostic.on_publish_diagnostics, {
