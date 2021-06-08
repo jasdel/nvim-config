@@ -10,9 +10,11 @@ call plug#begin("~/.config/nvim/plugged")
   "---------------------
   " Color Schemes
   "---------------------
-  Plug 'lucasprag/simpleblack'
-  Plug 'rktjmp/lush.nvim'
-  Plug 'metalelf0/jellybeans-nvim'
+  "Plug 'lucasprag/simpleblack'
+  "Plug 'rktjmp/lush.nvim'
+  "Plug 'metalelf0/jellybeans-nvim'
+  "Plug 'NLKNguyen/papercolor-theme'
+  Plug 'jacoborus/tender.vim'
 
   "---------------------
   " ** NeoVIM treesplitter plugins **
@@ -104,9 +106,13 @@ set cursorline
 if (has("termguicolors"))
  set termguicolors
 endif
+
 "set background=dark
 "colorscheme simpleblack
-colorscheme jellybeans-nvim
+"colorscheme jellybeans-nvim
+colorscheme tender
+hi Comment guifg=#aaaaaa ctermfg=242 guibg=NONE ctermbg=NONE gui=NONE cterm=NONE
+
 " Vim color detection
 " https://stackoverflow.com/questions/15375992/
 "if $COLORTERM == "screen"
