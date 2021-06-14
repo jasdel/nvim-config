@@ -290,3 +290,15 @@ autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.ts
 " Source plugins configurations
 "------------------------------------------
 source ~/.config/nvim/config/vim-go.vim
+
+"------------------------------------------
+" Spelling options
+"------------------------------------------
+" Set languages to check spelling on 'cjk' means ignore east asian characters
+" in spell check.
+set spelllang=en_us,cjk
+
+set spell
+" Enable spelling check via toggle
+"nnoremap <silent> <F11> :set spell!<cr>
+"inoremap <silent> <F11> <C-O>:set spell!<cr>
