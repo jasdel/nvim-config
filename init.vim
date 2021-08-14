@@ -6,6 +6,14 @@
 " NeoVim 0.5 Setup guides
 " * https://medium.com/life-at-moka/step-up-your-game-with-neovim-62ba814166d7
 " * https://crispgm.com/page/neovim-is-overpowering.html
+"
+" Install python3 pip and pynvim
+"   sudo apt install python3-pip
+"   python3 -m pip install --user --upgrade pynvim
+"
+" Install typescript language server wrapper
+"   npm install -g typescript-language-server
+"
 call plug#begin("~/.config/nvim/plugged")
   "---------------------
   " Color Schemes
