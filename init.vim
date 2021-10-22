@@ -50,11 +50,15 @@ call plug#begin("~/.config/nvim/plugged")
   Plug 'neovim/nvim-lspconfig'
   Plug 'nvim-lua/lsp_extensions.nvim'
   Plug 'nvim-lua/completion-nvim'
+  "Plug 'mfussenegger/nvim-dap'
   " Languages
   Plug 'fatih/vim-go'
+  " https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#go-using-delve-directly
+  "Plug 'leoluz/nvim-dap-go'
   " Rust With NeoVim
   " https://sharksforarms.dev/posts/neovim-rust/
   Plug 'rust-lang/rust.vim'
+  " Other languages tools
   Plug 'lepture/vim-jinja'
   Plug 'jasdel/vim-smithy'
 
@@ -312,3 +316,8 @@ set spell
 " Enable spelling check via toggle
 "nnoremap <silent> <F11> :set spell!<cr>
 "inoremap <silent> <F11> <C-O>:set spell!<cr>
+
+"------------------------------------------
+" Debugging configuration
+"------------------------------------------
+"lua require('dap-go').setup()
