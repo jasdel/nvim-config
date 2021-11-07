@@ -1,3 +1,4 @@
 /plugged
 /spell
 plug.vim.old
+autoload/plug.vim.old
