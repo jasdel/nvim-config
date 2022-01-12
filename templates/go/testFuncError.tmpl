@@ -1,30 +1,27 @@
 func TestThing(t *testing.T) {
 	cases := map[string]struct {
-		// Params
-		ExpectErr string
+		expectErr string
 	}{
 		// Cases
 	}
 
 	for name, c := range cases {
 		t.Run(name, func(t *testing.T) {
-			// Setup
 
-			s, err := DoSomething()
-			if len(c.ExpectErr) != 0 {
-				if err == nil {
-					t.Fatalf("expect session error, got none")
-				}
-				if e, a := c.ExpectErr, err.Error(); !strings.Contains(a, e) {
-					t.Fatalf("expect session error to contain %q, got %v", e, a)
-				}
-				return
+			if err == nil && len(c.expectErr) != 0 {
+				t.Fatalf("expect error %v, got none", c.expectErr)
 			}
-			if err != nil {
+			if err != nil && len(c.expectErr) == 0 {
 				t.Fatalf("expect no error, got %v", err)
 			}
+			if err != nil && !strings.Contains(err.Error(), c.expectErr) {
+				t.Fatalf("expect error to contain %v, got %v", c.expectErr, err)
+			}
+			if c.expectErr != "" {
+				return
+			}
 
-			// Asserts
+
 		})
 	}
 }

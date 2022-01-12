@@ -36,28 +36,33 @@ call plug#begin("~/.config/nvim/plugged")
   Plug 'nvim-treesitter/playground'
 
   "---------------------
-  " Telescope ? what is this for
+  " Telescope - Find files (ff)
   "---------------------
   " dependencies
-  Plug 'nvim-lua/popup.nvim'
-  Plug 'nvim-lua/plenary.nvim'
-  " telescope
-  Plug 'nvim-telescope/telescope.nvim'
+  " Plug 'nvim-lua/popup.nvim'
+  " Plug 'nvim-lua/plenary.nvim'
+  " " telescope
+  " Plug 'nvim-telescope/telescope.nvim'
 
   "---------------------
   " Language tools
   "---------------------
-  Plug 'neovim/nvim-lspconfig'
-  Plug 'nvim-lua/lsp_extensions.nvim'
-  Plug 'nvim-lua/completion-nvim'
-  "Plug 'mfussenegger/nvim-dap'
-  " Languages
+  " https://github.com/neovim/nvim-lspconfig/wiki/Autocompletion
+  Plug 'neovim/nvim-lspconfig'    " Collection of configurations for built-in LSP client
+  Plug 'hrsh7th/nvim-cmp'         " Autocompletion plugin
+  Plug 'hrsh7th/cmp-nvim-lsp'     " LSP source for nvim-cmp
+  Plug 'saadparwaiz1/cmp_luasnip' " Snippets source for nvim-cmp
+  Plug 'L3MON4D3/LuaSnip'         " Snippets plugin
+  
+  " Go
   Plug 'fatih/vim-go'
   " https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#go-using-delve-directly
   "Plug 'leoluz/nvim-dap-go'
+  
   " Rust With NeoVim
   " https://sharksforarms.dev/posts/neovim-rust/
-  Plug 'rust-lang/rust.vim'
+  "Plug 'rust-lang/rust.vim'
+
   " Other languages tools
   Plug 'lepture/vim-jinja'
   Plug 'jasdel/vim-smithy'
@@ -71,7 +76,7 @@ call plug#begin("~/.config/nvim/plugged")
   " https://github.com/tpope/vim-fugitive
   " :GBrowse - open in browser (Github), optional line selection
   Plug 'tpope/vim-fugitive'
-  " Allows opening GBrowse in GitHub
+  " Allows opening GBrowse in GitHub, extends Fugitive
   " https://github.com/tpope/vim-rhubarb/
   Plug 'tpope/vim-rhubarb'
 
@@ -104,9 +109,9 @@ let mapleader=","
 " Add jj as escape trigger
 inoremap jj <esc>
 
-" Setup Telescope key bindings
-" * https://github.com/nvim-telescope/telescope.nvim
-nnoremap <leader>ff <cmd>Telescope find_files<cr>
+"" Setup Telescope key bindings
+"" * https://github.com/nvim-telescope/telescope.nvim
+"nnoremap <leader>ff <cmd>Telescope find_files<cr>
 
 " Enable line numbering
 set number relativenumber
@@ -146,98 +151,151 @@ endif
 "------------------------------------------
 " Setup completion opts for nvim-compe
 "------------------------------------------
-set completeopt=menuone,noinsert,noselect
+"set completeopt=menuone,noinsert,noselect
+set completeopt=menuone,noselect
 
 " Avoid showing extra messages when using completion
-set shortmess+=c
+"set shortmess+=c
 
 "------------------------------------------
 " Setup language server (LSP)
 "------------------------------------------
 " Setup key bindings for lspconfig
+
 lua << EOF
-local nvim_lsp = require('lspconfig')
+--------------------------------
+-- TreeSitter
+--------------------------------
+require 'nvim-treesitter.configs'.setup {
+  ensure_installed = {"go", "typescript", "rust", "java"},
+  sync_install = false,
 
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false,
+  },
+  indent = {
+    enable = true,
+    disable = {"go"},
+  },
+  textobjects = {
+    select = {
+      enable = true,
+      lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
+      keymaps = {
+        -- You can use the capture groups defined in textobjects.scm
+        ['af'] = '@function.outer',
+        ['if'] = '@function.inner',
+        ['ac'] = '@class.outer',
+        ['ic'] = '@class.inner',
+      },
+    },
+    move = {
+      enable = true,
+      set_jumps = true, -- whether to set jumps in the jumplist
+      goto_next_start = {
+        [']m'] = '@function.outer',
+        [']]'] = '@class.outer',
+      },
+      goto_next_end = {
+        [']M'] = '@function.outer',
+        [']['] = '@class.outer',
+      },
+      goto_previous_start = {
+        ['[m'] = '@function.outer',
+        ['[['] = '@class.outer',
+      },
+      goto_previous_end = {
+        ['[M'] = '@function.outer',
+        ['[]'] = '@class.outer',
+      },
+    },
+  },
+}
+
+-- Add additional capabilities supported by nvim-cmp
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
--- capabilities.textDocument.completion.completionItem.resolveSupport = {
---   properties = {
---     'documentation',
---     'detail',
---     'additionalTextEdits',
---   }
--- }
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
--- function to attach completion when setting up lsp
-local on_attach = function(client)
-    require'completion'.on_attach(client)
+local lspconfig = require('lspconfig')
+
+-- TODO custom on_attach for keymap bindings
+-- https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
+
+-- Enable some language servers with the additional completion capabilities offered by nvim-cmp
+local servers = { 'gopls', 'rust_analyzer', 'tsserver' }
+for _, lsp in ipairs(servers) do
+  lspconfig[lsp].setup {
+    -- on_attach = my_custom_on_attach,
+    capabilities = capabilities,
+  }
 end
 
----- Use an on_attach function to only map the following keys 
----- after the language server attaches to the current buffer
---local on_attach = function(client, bufnr)
---  -- local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
---  -- local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
---
---  --Enable completion triggered by <c-x><c-o>
---  --buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
---
---  -- Mappings.
---  -- local opts = { noremap=true, silent=true }
---
---  -- See `:help vim.lsp.*` for documentation on any of the below functions
---  --buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
---  --buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
---  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
---  --buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
---  --buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
---  --buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
---  --buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
---  --buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
---  --buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
---  buf_set_keymap('n', '<Leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
---  --buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
---  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
---  --buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
---  --buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
---  --buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
---  --buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
---  --buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
---end
+-- luasnip setup
+local luasnip = require 'luasnip'
+
+-- nvim-cmp setup
+local cmp = require 'cmp'
+cmp.setup {
+  snippet = {
+    expand = function(args)
+      require('luasnip').lsp_expand(args.body)
+    end,
+  },
+  mapping = {
+    ['<C-p>'] = cmp.mapping.select_prev_item(),
+    ['<C-n>'] = cmp.mapping.select_next_item(),
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.close(),
+    ['<CR>'] = cmp.mapping.confirm {
+      behavior = cmp.ConfirmBehavior.Replace,
+      select = true,
+    },
+    ['<Tab>'] = function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      else
+        fallback()
+      end
+    end,
+    ['<S-Tab>'] = function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
+    end,
+  },
+  sources = {
+    { name = 'nvim_lsp' },
+    { name = 'luasnip' },
+  },
+}
 
 -- Installing rust analzer
 -- https://rust-analyzer.github.io/manual.html#rust-analyzer-language-server-binary
-nvim_lsp.rust_analyzer.setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
+lspconfig.rust_analyzer.setup{}
 
 -- Installing Go LSP
-nvim_lsp.gopls.setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
+lspconfig.gopls.setup{}
 
 -- Installing Typescript LSP
 -- https://github.com/neovim/nvim-lspconfig/blob/36d9109dc402eb4a37e55b0814cd8d4714f9a3a4/lua/lspconfig/tsserver.lua#L35-L40
 -- https://github.com/microsoft/TypeScript/issues/39459#issuecomment-696179304
 -- https://github.com/neovim/nvim-lspconfig/issues/250
 -- https://github.com/theia-ide/typescript-language-server
-nvim_lsp.tsserver.setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
-
--- Enable diagnostics
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-  vim.lsp.diagnostic.on_publish_diagnostics, {
-    virtual_text = false,
-    signs = true,
-    update_in_insert = true,
-  }
-)
+lspconfig.tsserver.setup{}
 
 EOF
+
+" Inlay hints for whole file
+"nnoremap <Leader>T :lua require'lsp_extensions'.inlay_hints()
 
 "------------------------------------------
 " LSP based Code navigation shortcuts
@@ -262,19 +320,19 @@ nnoremap <silent> ga    <cmd>lua vim.lsp.buf.code_action()<CR>
 " Trigger completion with <tab>
 " found in :help completion
 " Use <Tab> and <S-Tab> to navigate through popup menu
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+"inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+"inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " use <Tab> as trigger keys
-imap <Tab> <Plug>(completion_smart_tab)
-imap <S-Tab> <Plug>(completion_smart_s_tab)
+"imap <Tab> <Plug>(completion_smart_tab)
+"imap <S-Tab> <Plug>(completion_smart_s_tab)
 
 "------------------------------------------
 " Diagnostic Analysis and Popup
 "------------------------------------------
 " have a fixed column for the diagnostics to appear in
 " this removes the jitter when warnings/errors flow in
-set signcolumn=yes
+"set signcolumn=yes
 
 " Set updatetime for CursorHold
 " 300ms of no cursor movement to trigger CursorHold
@@ -289,18 +347,6 @@ nnoremap <silent> g[ <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
 nnoremap <silent> g] <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 
 "------------------------------------------
-" Enable LSP type inlay hints
-"------------------------------------------
-autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.rs
-\ lua require'lsp_extensions'.inlay_hints{ prefix = '', highlight = "Comment", enabled = {"TypeHint", "ChainingHint", "ParameterHint"} }
-
-autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.go
-\ lua require'lsp_extensions'.inlay_hints{ prefix = '', highlight = "Comment", enabled = {"TypeHint", "ChainingHint", "ParameterHint"} }
-
-autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *.ts
-\ lua require'lsp_extensions'.inlay_hints{ prefix = '', highlight = "Comment", enabled = {"TypeHint", "ChainingHint", "ParameterHint"} }
-
-"------------------------------------------
 " Source plugins configurations
 "------------------------------------------
 source ~/.config/nvim/config/vim-go.vim
@@ -311,7 +357,6 @@ source ~/.config/nvim/config/vim-go.vim
 " Set languages to check spelling on 'cjk' means ignore east asian characters
 " in spell check.
 set spelllang=en_us,cjk
-
 set spell
 " Enable spelling check via toggle
 "nnoremap <silent> <F11> :set spell!<cr>
@@ -321,3 +366,5 @@ set spell
 " Debugging configuration
 "------------------------------------------
 "lua require('dap-go').setup()
+
+"ts=2 sts=2 sw=2 et

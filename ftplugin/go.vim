@@ -52,16 +52,16 @@ autocmd FileType go nmap <leader>b :<C-u>call <SID>build_go_files()<CR>
 
 " Template Partials
 " -----------------
-command! -nargs=0 JoTestErrorAs read ~/.vim/templates/go/testErrorAs.tmpl
-command! -nargs=0 JoTestEqual read ~/.vim/templates/go/testEqual.tmpl
-command! -nargs=0 JoTestContains read ~/.vim/templates/go/testContains.tmpl
-command! -nargs=0 JoTestNoError read ~/.vim/templates/go/testNoError.tmpl
-command! -nargs=0 JoTestTable read ~/.vim/templates/go/testTable.tmpl
-command! -nargs=0 JoTestFuncError read ~/.vim/templates/go/testFuncError.tmpl
-command! -nargs=0 JoTestExpectError read ~/.vim/templates/go/testExpectError.tmpl
-command! -nargs=0 JoTestFunc read ~/.vim/templates/go/testFunc.tmpl
+command! -nargs=0 JoTestErrorAs read ~/.config/nvim/templates/go/testErrorAs.tmpl
+command! -nargs=0 JoTestEqual read ~/.config/nvim/templates/go/testEqual.tmpl
+command! -nargs=0 JoTestContains read ~/.config/nvim/templates/go/testContains.tmpl
+command! -nargs=0 JoTestNoError read ~/.config/nvim/templates/go/testNoError.tmpl
+command! -nargs=0 JoTestTable read ~/.config/nvim/templates/go/testTable.tmpl
+command! -nargs=0 JoTestFuncError read ~/.config/nvim/templates/go/testFuncError.tmpl
+command! -nargs=0 JoTestExpectError read ~/.config/nvim/templates/go/testExpectError.tmpl
+command! -nargs=0 JoTestFunc read ~/.config/nvim/templates/go/testFunc.tmpl
 
-command! -nargs=0 JoClientWithV2SDK read ~/.vim/templates/go/clientWithV2SDK.tmpl
+command! -nargs=0 JoClientWithV2SDK read ~/.config/nvim/templates/go/clientWithV2SDK.tmpl
 
 " Enable auto completion
 "setlocal omnifunc=go#complete#Complete
