@@ -33,7 +33,11 @@ call plug#begin("~/.config/nvim/plugged")
   " Toggle treesplitter behavior
   " :TSPlaygroundToggle
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-  Plug 'nvim-treesitter/playground'
+  "Plug 'nvim-treesitter/playground'
+  " Spell Checking:
+  Plug 'lewis6991/spellsitter.nvim'
+  " Alternative spell checker to consider,
+  " - https://github.com/dvdsk/prosesitter.nvim
 
   "---------------------
   " Telescope - Find files (ff)
@@ -211,6 +215,22 @@ require 'nvim-treesitter.configs'.setup {
       },
     },
   },
+}
+
+-- Spell checking conriguration
+-- https://github.com/lewis6991/spellsitter.nvim
+require('spellsitter').setup{
+  -- Whether enabled, can be a list of filetypes, e.g. {'python', 'lua'}
+  enable = true,
+
+  -- -- Highlight to use for bad spellings
+  -- hl = 'SpellBad',
+
+  -- -- Spellchecker to use. values:
+  -- -- * vimfn: built-in spell checker using vim.fn.spellbadword()
+  -- -- * ffi: built-in spell checker using the FFI to access the
+  -- --   internal spell_check() function
+  -- spellchecker = 'vimfn',
 }
 
 -- Add additional capabilities supported by nvim-cmp
