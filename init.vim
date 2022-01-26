@@ -36,6 +36,7 @@ call plug#begin("~/.config/nvim/plugged")
   "Plug 'nvim-treesitter/playground'
   " Spell Checking:
   Plug 'lewis6991/spellsitter.nvim'
+  "Plug 'f3fora/cmp-spell'
   " Alternative spell checker to consider,
   " - https://github.com/dvdsk/prosesitter.nvim
 
@@ -171,7 +172,7 @@ lua << EOF
 -- TreeSitter
 --------------------------------
 require 'nvim-treesitter.configs'.setup {
-  ensure_installed = {"go", "typescript", "rust", "java"},
+  ensure_installed = {"go", "typescript", "rust", "java", "json", "vim", "lua"},
   sync_install = false,
 
   highlight = {
@@ -217,7 +218,7 @@ require 'nvim-treesitter.configs'.setup {
   },
 }
 
--- Spell checking conriguration
+-- Spell checking configuration
 -- https://github.com/lewis6991/spellsitter.nvim
 require('spellsitter').setup{
   -- Whether enabled, can be a list of filetypes, e.g. {'python', 'lua'}
@@ -377,6 +378,7 @@ source ~/.config/nvim/config/vim-go.vim
 " Set languages to check spelling on 'cjk' means ignore east asian characters
 " in spell check.
 set spelllang=en_us,cjk
+set spelloptions=camel
 set spell
 " Enable spelling check via toggle
 "nnoremap <silent> <F11> :set spell!<cr>
