@@ -383,6 +383,7 @@ set spell
 " Enable spelling check via toggle
 "nnoremap <silent> <F11> :set spell!<cr>
 "inoremap <silent> <F11> <C-O>:set spell!<cr>
+nnoremap <leader>nn :set number<CR>:set relativenumber<CR>
 
 "------------------------------------------
 " Debugging configuration
