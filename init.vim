@@ -56,8 +56,15 @@ call plug#begin("~/.config/nvim/plugged")
   Plug 'neovim/nvim-lspconfig'    " Collection of configurations for built-in LSP client
   Plug 'hrsh7th/nvim-cmp'         " Autocompletion plugin
   Plug 'hrsh7th/cmp-nvim-lsp'     " LSP source for nvim-cmp
+  Plug 'hrsh7th/cmp-path'
+  Plug 'hrsh7th/cmp-buffer'
   Plug 'saadparwaiz1/cmp_luasnip' " Snippets source for nvim-cmp
   Plug 'L3MON4D3/LuaSnip'         " Snippets plugin
+
+  Plug 'nvim-lua/plenary.nvim'
+  Plug 'mfussenegger/nvim-dap'
+  Plug 'rcarriga/nvim-dap-ui'
+  Plug 'mfussenegger/nvim-dap'
   
   " Go
   Plug 'fatih/vim-go'
@@ -67,6 +74,7 @@ call plug#begin("~/.config/nvim/plugged")
   " Rust With NeoVim
   " https://sharksforarms.dev/posts/neovim-rust/
   "Plug 'rust-lang/rust.vim'
+  Plug 'simrat39/rust-tools.nvim'
 
   " Other languages tools
   Plug 'lepture/vim-jinja'
@@ -157,10 +165,17 @@ endif
 " Setup completion opts for nvim-compe
 "------------------------------------------
 "set completeopt=menuone,noinsert,noselect
-set completeopt=menuone,noselect
+"set completeopt=menuone,noselect
+
+" Set completeopt to have a better completion experience
+" :help completeopt
+" menuone: popup even when there's only one match
+" noinsert: Do not insert text until a selection is made
+" noselect: Do not select, force user to select one from the menu
+set completeopt=menuone,noinsert,noselect
 
 " Avoid showing extra messages when using completion
-"set shortmess+=c
+set shortmess+=c
 
 "------------------------------------------
 " Setup language server (LSP)
@@ -240,11 +255,44 @@ capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 local lspconfig = require('lspconfig')
 
+local rustToolsOpts = {
+    tools = { -- rust-tools options
+        autoSetHints = true,
+        hover_with_actions = true,
+        inlay_hints = {
+            show_parameter_hints = false,
+            parameter_hints_prefix = "",
+            other_hints_prefix = "",
+        },
+    },
+
+    -- all the opts to send to nvim-lspconfig
+    -- these override the defaults set by rust-tools.nvim
+    -- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
+    server = {
+        -- on_attach is a callback called when the language server attaches to the buffer
+        -- on_attach = on_attach,
+        settings = {
+            -- to enable rust-analyzer settings visit:
+            -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
+            ["rust-analyzer"] = {
+                -- enable clippy on save
+                checkOnSave = {
+                    command = "clippy"
+                },
+            }
+        }
+    },
+}
+
+require('rust-tools').setup(rustToolsOpts)
+
 -- TODO custom on_attach for keymap bindings
 -- https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
 
 -- Enable some language servers with the additional completion capabilities offered by nvim-cmp
-local servers = { 'gopls', 'rust_analyzer', 'tsserver' }
+-- local servers = { 'gopls', 'rust_analyzer', 'tsserver' }
+local servers = { 'gopls', 'tsserver' }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     -- on_attach = my_custom_on_attach,
@@ -271,7 +319,7 @@ cmp.setup {
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-e>'] = cmp.mapping.close(),
     ['<CR>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
+      behavior = cmp.ConfirmBehavior.Insert,
       select = true,
     },
     ['<Tab>'] = function(fallback)
@@ -301,7 +349,7 @@ cmp.setup {
 
 -- Installing rust analzer
 -- https://rust-analyzer.github.io/manual.html#rust-analyzer-language-server-binary
-lspconfig.rust_analyzer.setup{}
+-- lspconfig.rust_analyzer.setup{}
 
 -- Installing Go LSP
 lspconfig.gopls.setup{}
@@ -313,10 +361,97 @@ lspconfig.gopls.setup{}
 -- https://github.com/theia-ide/typescript-language-server
 lspconfig.tsserver.setup{}
 
+-- Debugging
+require("dapui").setup()
+
+local dap = require('dap')
+-- https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#ccrust-via-lldb-vscode
+dap.adapters.lldb = {
+  type = 'executable',
+  command = '/usr/bin/lldb-vscode-11', -- adjust as needed
+  name = "lldb"
+}
+
+-- https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#Go
+dap.adapters.go = function(callback, config)
+  local stdout = vim.loop.new_pipe(false)
+  local handle
+  local pid_or_err
+  local port = 38697
+  local opts = {
+    stdio = {nil, stdout},
+    args = {"dap", "-l", "127.0.0.1:" .. port},
+    detached = true
+  }
+  handle, pid_or_err = vim.loop.spawn("dlv", opts, function(code)
+    stdout:close()
+    handle:close()
+    if code ~= 0 then
+      print('dlv exited with code', code)
+    end
+  end)
+  assert(handle, 'Error running dlv: ' .. tostring(pid_or_err))
+  stdout:read_start(function(err, chunk)
+    assert(not err, err)
+    if chunk then
+      vim.schedule(function()
+        require('dap.repl').append(chunk)
+      end)
+    end
+  end)
+  -- Wait for delve to start
+  vim.defer_fn(
+    function()
+      callback({type = "server", host = "127.0.0.1", port = port})
+    end,
+    100)
+end
+-- https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_dap.md
+dap.configurations.go = {
+  {
+    type = "go",
+    name = "Debug",
+    request = "launch",
+    program = "${file}"
+  },
+  {
+    type = "go",
+    name = "Debug test", -- configuration for debugging test files
+    request = "launch",
+    mode = "test",
+    program = "${file}"
+  },
+  -- works with go.mod packages and sub packages 
+  {
+    type = "go",
+    name = "Debug test (go.mod)",
+    request = "launch",
+    mode = "test",
+    program = "./${relativeFileDirname}"
+  } 
+}
+
+-- Open and close DAP UI automatically
+local dapui = require("dapui")
+dap.listeners.after.event_initialized["dapui_config"] = function()
+  dapui.open()
+end
+dap.listeners.before.event_terminated["dapui_config"] = function()
+  dapui.close()
+end
+dap.listeners.before.event_exited["dapui_config"] = function()
+  dapui.close()
+end
+
 EOF
 
 " Inlay hints for whole file
 "nnoremap <Leader>T :lua require'lsp_extensions'.inlay_hints()
+
+"------------------------------------------
+" Per file settings
+"------------------------------------------
+autocmd BufWritePre *.rs lua vim.lsp.buf.formatting_sync(nil, 200)
 
 "------------------------------------------
 " LSP based Code navigation shortcuts

@@ -4,8 +4,8 @@
 " Auto format on save
 let g:rustfmt_autosave = 1
 
-" Rust style formating
-"let g:rust_recommended_style = 1
+" Rust style formatting
+let g:rust_recommended_style = 1
 
 " (un)comment line(s)
 :map <buffer> <Leader>// :s:^://:<CR>:noh<CR>
