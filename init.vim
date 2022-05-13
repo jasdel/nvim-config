@@ -68,8 +68,10 @@ call plug#begin("~/.config/nvim/plugged")
   
   " Go
   Plug 'fatih/vim-go'
+  " https://pepa.holla.cz/2021/03/01/golang-debugging-application-in-neovim/
+  Plug 'mfussenegger/nvim-dap' "DAP (Debug Adapter Protocol)
   " https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation#go-using-delve-directly
-  "Plug 'leoluz/nvim-dap-go'
+  "  Plug 'leoluz/nvim-dap-go'
   
   " Rust With NeoVim
   " https://sharksforarms.dev/posts/neovim-rust/
@@ -290,9 +292,9 @@ require('rust-tools').setup(rustToolsOpts)
 -- TODO custom on_attach for keymap bindings
 -- https://github.com/neovim/nvim-lspconfig#keybindings-and-completion
 
--- Enable some language servers with the additional completion capabilities offered by nvim-cmp
--- local servers = { 'gopls', 'rust_analyzer', 'tsserver' }
-local servers = { 'gopls', 'tsserver' }
+-- Enable some language servers with the additional completion capabilities
+-- offered by nvim-cmp
+local servers = { 'gopls', 'rust_analyzer', 'tsserver' }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     -- on_attach = my_custom_on_attach,
@@ -347,7 +349,7 @@ cmp.setup {
   },
 }
 
--- Installing rust analzer
+-- Installing rust analyzer
 -- https://rust-analyzer.github.io/manual.html#rust-analyzer-language-server-binary
 -- lspconfig.rust_analyzer.setup{}
 
@@ -502,6 +504,8 @@ nnoremap <leader>dn <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 nnoremap <silent> g[ <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
 nnoremap <silent> g] <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
 
+nnoremap <leader>nn :set number<CR>:set relativenumber<CR> 
+
 "------------------------------------------
 " Source plugins configurations
 "------------------------------------------
@@ -521,8 +525,28 @@ set spell
 nnoremap <leader>nn :set number<CR>:set relativenumber<CR>
 
 "------------------------------------------
-" Debugging configuration
+" Debug setup
 "------------------------------------------
 "lua require('dap-go').setup()
+
+lua << EOF
+local dap = require 'dap'
+
+dap.adapters.go = {
+  type = 'executable';
+  command = 'node';
+  args = {os.getenv('HOME') .. '/dev/golang/vscode-go/dist/debugAdapter.js'};
+}
+dap.configurations.go = {
+  {
+    type = 'go';
+    name = 'Debug';
+    request = 'launch';
+    showLog = false;
+    program = "${file}";
+    dlvToolPath = vim.fn.exepath('/Users/jasdel/go/bin/dlv')
+  },
+}
+EOF
 
 "ts=2 sts=2 sw=2 et
