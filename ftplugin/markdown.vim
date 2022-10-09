@@ -8,7 +8,7 @@
 
 set tabstop=4 shiftwidth=4 expandtab
 
-let g:vim_markdown_folding_disabled = 1
+"let g:vim_markdown_folding_disabled = 1
 
 "Pencil
 "PencilSoft
