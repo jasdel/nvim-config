@@ -144,6 +144,12 @@ lspconfig.gopls.setup {
 		debounce_text_changes = 150,
 	},
 }
+
+lspconfig.tsserver.setup {
+       capabilities = capabilities,
+       on_attach = on_attach,
+}
+
 -- require('lint').linters_by_ft = {
 -- 	go = {
 -- 		'golangcilint',
