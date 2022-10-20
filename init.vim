@@ -74,6 +74,7 @@ call plug#begin("~/.config/nvim/plugged")
   "---------------------
   Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-lua/popup.nvim'
+  Plug 'ray-x/guihua.lua', {'do': 'cd lua/fzy && make' }
 
   "---------------------
   " Telescope - Fuzzy Find files (ff)
@@ -94,7 +95,9 @@ call plug#begin("~/.config/nvim/plugged")
   "---------------------
   "Plug 'sheerun/vim-polyglot'
   "Plug 'fatih/vim-go'
-  Plug 'crispgm/nvim-go'
+  "Plug 'crispgm/nvim-go'
+  "Plug 'jpmcb/nvim-go'
+  Plug 'ray-x/go.nvim'
   Plug 'simrat39/rust-tools.nvim'
 
   " https://github.com/neovim/nvim-lspconfig/wiki/Autocompletion
@@ -139,10 +142,10 @@ call plug#begin("~/.config/nvim/plugged")
   " Git browsing utilities
   " https://github.com/tpope/vim-fugitive
   " :GBrowse - open in browser (Github), optional line selection
-  "Plug 'tpope/vim-fugitive'
+  Plug 'tpope/vim-fugitive'
   " Allows opening GBrowse in GitHub, extends Fugitive
   " https://github.com/tpope/vim-rhubarb/
-  "Plug 'tpope/vim-rhubarb'
+  Plug 'tpope/vim-rhubarb'
 
   "---------------------
   " Start page

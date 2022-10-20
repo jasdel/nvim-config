@@ -20,16 +20,15 @@
 "
 ":nmap <Leader>gc :GoCoverageToggle<CR>
 "
-:nmap <Leader>t :GoTest<CR>
-:nmap <Leader>tf :GoTestFunc<CR>
-:nmap <Leader>gtt :GoToTest<CR>
-":nmap <Leader>b :GoBuild<CR>
+au Filetype go nmap <Leader>t :GoTest<CR>
+au Filetype go nmap <Leader>tf :GoTestFunc<CR>
+au Filetype go nmap <Leader>b :GoBuild<CR>
 "
 "map <C-n> :cnext<CR>
 "map <C-m> :cprevious<CR>
 "nnoremap <leader>a :cclose<CR>
 "
-"au Filetype go nmap <leader>ga <Plug>(go-alternate-edit)
+au Filetype go nmap <leader>ga :GoAlt<CR>
 "au Filetype go nmap <leader>gah <Plug>(go-alternate-split)
 "au Filetype go nmap <leader>gav <Plug>(go-alternate-vertical)
 "au FileType go nmap <leader>gt :GoDeclsDir<cr>

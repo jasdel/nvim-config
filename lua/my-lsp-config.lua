@@ -36,7 +36,7 @@ require("mason-lspconfig").setup({
 
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 local on_attach = function(client, bufnr)
 
@@ -107,22 +107,42 @@ end
 -- setup service capabilities
 local lspconfig = require('lspconfig')
 
+-- jpmcb/nvim-go
+--require('nvim-go').setup()
+
+-- ray-x/go.nvim
 require('go').setup({
-	formatter = 'goimports',
-	--auto_lint = false,
-	test_popup_auto_leave = true,
-	test_open_cmd = 'edit',
+    lsp_cfg = {
+        capabilities = capabilities,
+    },
 })
+-- Run gofmt + goimport on save
+vim.api.nvim_exec([[ autocmd BufWritePre *.go :silent! lua require('go.format').goimport() ]], false)
+
+-- crispgm/nvim-go
+-- require('go').setup({
+-- 	formatter = 'goimports',
+-- 	--auto_lint = false,
+-- 	test_popup_auto_leave = true,
+-- 	test_open_cmd = 'edit',
+-- })
+
 lspconfig.gopls.setup {
 	capabilities = capabilities,
 	on_attach = on_attach,
-	-- settings = {
-	-- 	gopls = {
-	-- 	},
-	-- },
-	--flags = {
-	--	debounce_text_changes = 150,
-	--},
+	settings = {
+	    gopls = {
+            --ui = {
+            --    completion = {
+            --        usePlaceholders = true,
+            --    },
+            --},
+            staticcheck = true,
+	 	},
+	},
+	flags = {
+		debounce_text_changes = 150,
+	},
 }
 -- require('lint').linters_by_ft = {
 -- 	go = {
