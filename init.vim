@@ -68,7 +68,7 @@ call plug#begin("~/.config/nvim/plugged")
   " Install treesplitter language plugins
   " :TSInstall <lang>
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-  
+
   "---------------------
   " NeoVim PopUp window behavior
   "---------------------
@@ -85,7 +85,7 @@ call plug#begin("~/.config/nvim/plugged")
   "---------------------
   " Buffer Navigation and Styling
   "---------------------
-  " buffer status line 
+  " buffer status line
   Plug 'nvim-lualine/lualine.nvim'
   " EasyMotion like jump to in file
   Plug 'phaazon/hop.nvim'
@@ -138,7 +138,7 @@ call plug#begin("~/.config/nvim/plugged")
   " Git Utilities
   "---------------------
   Plug 'airblade/vim-gitgutter'
-  
+
   " Git browsing utilities
   " https://github.com/tpope/vim-fugitive
   " :GBrowse - open in browser (Github), optional line selection
@@ -163,8 +163,10 @@ if (has("termguicolors"))
 endif
 
 colorscheme tender
-" Fixup row highlight color for termguicolors
+" Fixup comment color for better read-ability
 hi Comment guifg=#aaaaaa ctermfg=242 guibg=NONE ctermbg=NONE gui=NONE cterm=NONE
+" Fixup number line highlight
+hi LineNr guifg=grey ctermfg=grey guibg=NONE ctermbg=NONE gui=NONE cterm=NONE
 
 lua require('my-treesitter')
 
@@ -273,9 +275,9 @@ set spell
 "------------------------------------------
 " Telescope Configuration for fuzzy find
 "------------------------------------------
-lua require("my-telescope") 
+lua require("my-telescope")
 nnoremap <C-_> <cmd>lua require("my-telescope").curr_buf() <cr>
-" 
+"
 " " Setup Telescope key bindings
 " " * https://github.com/nvim-telescope/telescope.nvim
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
@@ -283,6 +285,6 @@ nnoremap <leader>ff <cmd>Telescope find_files<cr>
 "------------------------------------------
 " Debugging configuration
 "------------------------------------------
-lua require("my-debugging") 
+lua require("my-debugging")
 
 "ts=2 sts=2 sw=2 et
