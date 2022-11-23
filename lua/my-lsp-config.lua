@@ -65,7 +65,7 @@ local on_attach = function(client, bufnr)
 	-- buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
 	-- buf_set_keymap("n", "<leader>ca", "<cmd>Telescope lsp_code_actions<CR>", opts)
 	-- buf_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-	-- buf_set_keymap("n", "gr", "<cmd>Telescope lsp_references<CR>", opts)
+	buf_set_keymap("n", "gr", "<cmd>Telescope lsp_references<CR>", opts)
 	-- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
 	-- buf_set_keymap('n', '<leader>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
 	-- buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
@@ -144,6 +144,30 @@ lspconfig.gopls.setup {
 		debounce_text_changes = 150,
 	},
 }
+
+lspconfig['rust_analyzer'].setup({
+	capabilities = capabilities,
+    on_attach=on_attach,
+    settings = {
+        ["rust-analyzer"] = {
+            cmd = "rustup run stable rust-analyzer",
+            imports = {
+                granularity = {
+                    group = "module",
+                },
+                prefix = "self",
+            },
+            cargo = {
+                buildScripts = {
+                    enable = true,
+                },
+            },
+            procMacro = {
+                enable = true
+            },
+        }
+    }
+})
 
 lspconfig.tsserver.setup {
        capabilities = capabilities,

@@ -34,6 +34,9 @@ set scrolloff=7
 set cursorline
 set encoding=UTF-8
 
+set textwidth=90
+set colorcolumn=90
+
 syntax enable
 
 "------------------------------------------
@@ -161,6 +164,7 @@ call plug#end()
 if (has("termguicolors"))
  set termguicolors
 endif
+
 
 colorscheme tender
 " Fixup comment color for better read-ability
