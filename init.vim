@@ -101,6 +101,7 @@ call plug#begin("~/.config/nvim/plugged")
   "Plug 'crispgm/nvim-go'
   "Plug 'jpmcb/nvim-go'
   Plug 'ray-x/go.nvim'
+  Plug 'dn-kolesnikov/tinygo-nvim'
   Plug 'simrat39/rust-tools.nvim'
 
   " https://github.com/neovim/nvim-lspconfig/wiki/Autocompletion
