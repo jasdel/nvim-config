@@ -6,6 +6,8 @@ return {
       ensure_installed = {
         "gopls",
         "lua_ls",
+        "rust_analyzer",
+        "helm_ls",
         --"pyright",
       },
     },
@@ -34,6 +36,11 @@ return {
         --"isort", -- python formatter
         --"black", -- python formatter
         --"pylint",
+
+        -- Go
+        "delve", -- Go debugger
+        "gofumpt",
+        "golines",
       },
     },
     dependencies = {
