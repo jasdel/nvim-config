@@ -34,5 +34,5 @@ opt.splitbelow = true
 opt.winborder = "rounded"
 
 -- spelling
---opt.spell = true
+opt.spell = true
 opt.spelllang = { "en_us" } -- or multiple languages like {"en", "sv"}
