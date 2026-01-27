@@ -10,7 +10,7 @@ return {
     -- configure treesitter
     treesitter.setup({ -- enable syntax highlighting
       -- Directory to install parsers and queries to (prepended to `runtimepath` to have priority)
-      install_dir = vim.fn.stdpath('data') .. '/site',
+      install_dir = vim.fn.stdpath("data") .. "/site",
       highlight = {
         enable = true,
       },
@@ -29,7 +29,6 @@ return {
         "markdown",
         "markdown_inline",
         "svelte",
-        "graphql",
         "bash",
         "lua",
         "vim",
@@ -40,6 +39,10 @@ return {
         "c",
         "rust",
         "go",
+        -- Custom
+        "helm",
+        "proto",
+        "python",
       },
       incremental_selection = {
         enable = true,

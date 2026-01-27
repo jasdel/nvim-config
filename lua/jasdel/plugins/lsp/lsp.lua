@@ -15,5 +15,14 @@ return {
     vim.lsp.config("*", {
       capabilities = capabilities,
     })
+
+    vim.lsp.config("gopls", {
+      settings = {
+        gopls = {
+          staticcheck = true,
+          gofumpt = true,
+        },
+      },
+    })
   end,
 }

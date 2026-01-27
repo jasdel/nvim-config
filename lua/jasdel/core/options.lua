@@ -4,8 +4,8 @@ opt.relativenumber = true
 opt.number = true
 
 -- tabs and indention
-opt.tabstop = 4
-opt.shiftwidth = 4
+opt.tabstop = 2
+opt.shiftwidth = 2
 opt.expandtab = true
 opt.autoindent = true
 
@@ -32,3 +32,7 @@ opt.clipboard:append("unnamedplus")
 opt.splitright = true
 opt.splitbelow = true
 opt.winborder = "rounded"
+
+-- spelling
+--opt.spell = true
+opt.spelllang = { "en_us" } -- or multiple languages like {"en", "sv"}

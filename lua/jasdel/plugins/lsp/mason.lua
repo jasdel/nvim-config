@@ -8,6 +8,12 @@ return {
         "lua_ls",
         "rust_analyzer",
         "helm_ls",
+        "protols",
+
+        -- https://github.com/blopker/codebook
+        -- $ cargo install codebook-lsp
+        --"codebook",
+
         --"pyright",
       },
     },
@@ -31,16 +37,25 @@ return {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
     opts = {
       ensure_installed = {
-        --"prettier", -- ts prettier formatter
+        -- https://github.com/JohnnyMorganz/StyLua
+        -- $ cargo install stylua
         "stylua", -- lua formatter
+
+        -- https://github.com/tekumara/typos-lsp
+        -- $ brew install typos-lsp
+        "typos-lsp",
+
+        --"prettier", -- ts prettier formatter
         --"isort", -- python formatter
         --"black", -- python formatter
         --"pylint",
 
         -- Go
         "delve", -- Go debugger
+
+        -- https://github.com/mvdan/gofumpt
+        -- $ go install mvdan.cc/gofumpt@latest
         "gofumpt",
-        "golines",
       },
     },
     dependencies = {
