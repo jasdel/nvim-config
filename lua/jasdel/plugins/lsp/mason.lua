@@ -12,6 +12,7 @@ return {
 
         -- https://github.com/blopker/codebook
         -- $ cargo install codebook-lsp
+        -- ~/.codebook.toml
         "codebook",
 
         --"pyright",
