@@ -1,3 +1,5 @@
+-- https://github.com/kdheepak/lazygit.nvim
+-- brew install lazygit
 return {
   "kdheepak/lazygit.nvim",
   cmd = {

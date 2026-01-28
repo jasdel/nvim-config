@@ -15,6 +15,12 @@ return {
         -- ~/.codebook.toml
         "codebook",
 
+        -- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md#golangci_lint_ls
+        -- orig $ go install github.com/nametake/golangci-lint-langserver@latest
+        -- fork $ go install github.com/jasdel/golangci-lint-langserver@latest
+        -- $ go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+        -- "golangci_lint_ls",
+
         --"pyright",
       },
     },

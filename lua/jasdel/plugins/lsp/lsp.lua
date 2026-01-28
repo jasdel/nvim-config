@@ -3,7 +3,7 @@ return {
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     { "antosha417/nvim-lsp-file-operations", config = true },
-    { "folke/lazydev.nvim",                  opts = {} },
+    { "folke/lazydev.nvim", opts = {} },
   },
   config = function()
     -- import cmp-nvim-lsp plugin
@@ -24,5 +24,7 @@ return {
         },
       },
     })
+
+    vim.lsp.enable("golangci_lint_ls")
   end,
 }
