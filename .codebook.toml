@@ -1,0 +1,14 @@
+words = [
+    "gofumpt",
+    "goimports",
+    "keybinds",
+    "lazypath",
+    "lazyrepo",
+    "lazyvim",
+    "neovim",
+    "nvim",
+    "protols",
+    "staticcheck",
+    "stylua",
+    "vscode",
+]
