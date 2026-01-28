@@ -17,7 +17,7 @@ opt.smartcase = true
 
 opt.cursorline = true
 
---termguicolors
+-- term GUI colors
 opt.termguicolors = true
 opt.background = "dark"
 opt.signcolumn = "yes"
@@ -36,3 +36,4 @@ opt.winborder = "rounded"
 -- spelling
 opt.spell = true
 opt.spelllang = { "en_us" } -- or multiple languages like {"en", "sv"}
+opt.spelloptions = "camel"

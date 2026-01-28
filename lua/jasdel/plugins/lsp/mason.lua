@@ -12,7 +12,7 @@ return {
 
         -- https://github.com/blopker/codebook
         -- $ cargo install codebook-lsp
-        --"codebook",
+        "codebook",
 
         --"pyright",
       },
@@ -43,7 +43,7 @@ return {
 
         -- https://github.com/tekumara/typos-lsp
         -- $ brew install typos-lsp
-        "typos-lsp",
+        --"typos-lsp",
 
         --"prettier", -- ts prettier formatter
         --"isort", -- python formatter
