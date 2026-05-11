@@ -26,5 +26,15 @@ return {
     })
 
     vim.lsp.enable("golangci_lint_ls")
+
+    vim.lsp.config("sqlls", {
+      filetypes = { "sql" },
+      root_dir = function(_)
+        return vim.loop.cwd()
+      end,
+    })
+    vim.lsp.enable("sqlls")
+
+    vim.lsp.enable("protols")
   end,
 }
